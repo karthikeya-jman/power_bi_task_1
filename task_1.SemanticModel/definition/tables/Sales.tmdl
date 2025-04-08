@@ -1,6 +1,11 @@
 table Sales
 	lineageTag: 11615dd4-3e8e-4826-be00-bd0a118431e4
 
+	measure AOV = DIVIDE(SUM(Sales[SalesAmount]), COUNT(Sales[OrderID]))
+		lineageTag: 0991f428-fda9-4c89-b657-8354c22cc825
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column OrderID
 		dataType: int64
 		formatString: 0
@@ -11,13 +16,20 @@ table Sales
 		annotation SummarizationSetBy = Automatic
 
 	column DateKey
-		dataType: int64
-		formatString: 0
+		dataType: dateTime
+		formatString: Long Date
 		lineageTag: b22a4884-4ef3-4bca-b540-575f5028bc66
-		summarizeBy: count
+		summarizeBy: none
 		sourceColumn: DateKey
 
+		variation Variation
+			isDefault
+			relationship: ee265dfb-f056-4768-bd39-5dacdf053759
+			defaultHierarchy: LocalDateTable_ac2ab37f-d024-4b86-adb9-17ed002189a1.'Date Hierarchy'
+
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column CustomerID
 		dataType: int64
@@ -79,9 +91,11 @@ table Sales
 				let
 				    Source = Csv.Document(File.Contents("C:\Users\TumpudiKarthikeya\Downloads\OrderDetails_Data\OrderDetails_Data\Sales.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
 				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
-				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderID", Int64.Type}, {"DateKey", Int64.Type}, {"CustomerID", Int64.Type}, {"ProductID", Int64.Type}, {"RegionID", Int64.Type}, {"SalesRepID", Int64.Type}, {"Quantity", Int64.Type}, {"SalesAmount", Int64.Type}})
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderID", Int64.Type}, {"DateKey", type date}, {"CustomerID", Int64.Type}, {"ProductID", Int64.Type}, {"RegionID", Int64.Type}, {"SalesRepID", Int64.Type}, {"Quantity", Int64.Type}, {"SalesAmount", Int64.Type}})
 				in
 				    #"Changed Type"
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
 

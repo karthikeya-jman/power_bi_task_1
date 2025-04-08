@@ -14,3 +14,8 @@ relationship AutoDetected_2f49720a-6860-4231-ba0e-0f177f514a5a
 	fromColumn: Sales.CustomerID
 	toColumn: Customer.CustomerID
 
+relationship ee265dfb-f056-4768-bd39-5dacdf053759
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Sales.DateKey
+	toColumn: LocalDateTable_ac2ab37f-d024-4b86-adb9-17ed002189a1.Date
+
