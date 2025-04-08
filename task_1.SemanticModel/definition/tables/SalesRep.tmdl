@@ -1,0 +1,32 @@
+table SalesRep
+	lineageTag: e37754eb-e3fd-4eec-bc7e-c2051d9006cc
+
+	column SalesRepID
+		dataType: int64
+		formatString: 0
+		lineageTag: d9bb7a82-aac9-43b5-a64d-437fa16c5015
+		summarizeBy: none
+		sourceColumn: SalesRepID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesRepName
+		dataType: string
+		lineageTag: 1fac8bb2-af19-4ac9-8aa1-72452ee53c55
+		summarizeBy: none
+		sourceColumn: SalesRepName
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SalesRep = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\TumpudiKarthikeya\Downloads\OrderDetails_Data\OrderDetails_Data\SalesRep.csv"),[Delimiter=",", Columns=2, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SalesRepID", Int64.Type}, {"SalesRepName", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

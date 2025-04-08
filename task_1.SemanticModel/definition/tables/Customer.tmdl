@@ -1,0 +1,40 @@
+table Customer
+	lineageTag: 3b6db100-29d3-4cbc-97e9-ccc500629f42
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: 61d18afe-f574-453f-9497-97c50c56fbc1
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerName
+		dataType: string
+		lineageTag: c4974422-1897-461b-9721-e36c2b4281e7
+		summarizeBy: none
+		sourceColumn: CustomerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Segment
+		dataType: string
+		lineageTag: 61878c91-1152-4d50-a167-68697472b11a
+		summarizeBy: none
+		sourceColumn: Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Customer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\TumpudiKarthikeya\Downloads\OrderDetails_Data\OrderDetails_Data\Customer.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerID", Int64.Type}, {"CustomerName", type text}, {"Segment", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
